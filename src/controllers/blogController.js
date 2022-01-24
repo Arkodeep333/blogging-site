@@ -236,11 +236,11 @@ const deleteBlogByID = async function (req, res) {
         if(!checkBlog){
             return res.status(400).send({status: false, message: "The blog has already been deleted"})
         }
-        if(JSON.stringify(findBlog.authorId) !== JSON.stringify(req.userId)){
+        if(JSON.stringify(checkBlog.authorId) !== JSON.stringify(req.userId)){
             return res.status(401).send({status: false, message: "Access denied"})
             
         }
-        let deleteBlog = await blogModel.findOneAndUpdate({_id: blogId}, {isDeleted: true}, {new: true})
+        let deleteBlog = await blogModel.findOneAndUpdate({_id: blogId}, {isDeleted: true, deletedAt: new Date() }, {new: true})
         res.status(200).send({status: true, message: "Blog successfully deleted" })
     } catch (error) {
         res.status(500).send({ status: false, message: error.message });
